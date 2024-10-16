@@ -11,10 +11,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -163,9 +160,15 @@ public class AreaUtils {
         return codes;
     }
 
-    public static void main(String[] args) {
-        List<String> codes = getRandomCodeCombination();
-        System.out.println(codes);
+    /**
+     * 获取地区名称
+     *
+     * @param id 地区编码
+     * @return 地区名称
+     */
+    public static String getAreaName(String id) {
+        Tree<String> node = TreeUtil.getNode(AREA_TREE, id);
+        return (String) Optional.ofNullable(node).map(Tree::getName).orElse(null);
     }
 
 
