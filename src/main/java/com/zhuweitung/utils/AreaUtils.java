@@ -132,11 +132,15 @@ public class AreaUtils {
     /**
      * 获取随机地区编码组合（各省）
      *
+     * @param provinceNames 省份名称列表
      * @return 各省地区编码 0_0_0_0
      */
-    public static List<String> getRandomCodeCombination() {
+    public static List<String> getRandomCodeCombination(List<String> provinceNames) {
         List<String> codes = new ArrayList<>();
         for (AreaInfo province : PROVINCES) {
+            if (CollUtil.isNotEmpty(provinceNames) && !provinceNames.contains(province.getName())) {
+                continue;
+            }
             Tree<String> node = TreeUtil.getNode(AREA_TREE, province.getId());
             List<String> nodeCodes = getRandomChildrenCode(node);
             if (nodeCodes.size() < 4) {

@@ -7,7 +7,6 @@ import com.zhuweitung.model.Config;
 import com.zhuweitung.utils.AreaUtils;
 import com.zhuweitung.utils.ConfigUtils;
 import com.zhuweitung.utils.SkuUtils;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,17 +40,24 @@ public class Runner {
         CronUtil.start();
     }
 
-    @AllArgsConstructor
     private static class Task implements Runnable {
 
         private List<String> skuIds;
+        private boolean running = false;
+
+        public Task(List<String> skuIds) {
+            this.skuIds = skuIds;
+        }
 
         @Override
         public void run() {
-            for (String skuId : skuIds) {
-                log.info("查询商品库存：{}", skuId);
-                SkuUtils.queryStock(skuId);
+            if (running) {
+                return;
             }
+            running = true;
+            log.info("查询商品库存：{}", skuIds);
+            SkuUtils.queryStock(skuIds);
+            running = false;
         }
     }
 }

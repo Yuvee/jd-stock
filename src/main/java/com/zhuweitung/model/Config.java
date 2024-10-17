@@ -17,7 +17,7 @@ public class Config {
     /**
      * 最小查询延迟
      */
-    public static final int MIN_DELAY = 200;
+    public static final int MIN_DELAY = 5000;
 
     /**
      * 定时任务表达式（分钟级）

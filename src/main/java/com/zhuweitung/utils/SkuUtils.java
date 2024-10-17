@@ -28,21 +28,21 @@ public class SkuUtils {
     /**
      * 查询库存
      *
-     * @param skuId 商品id
+     * @param skuIds 商品ids
      */
-    public static void queryStock(String skuId) {
+    public static void queryStock(List<String> skuIds) {
         Config config = ConfigUtils.get();
 
         Map<String, Object> params = new HashMap<>();
         params.put("type", "getstocks");
-        params.put("skuIds", skuId);
+        params.put("skuIds", StrUtil.join(",", skuIds));
         params.put("appid", "item-v3");
         params.put("functionId", "pc_stocks");
         params.put("callback", "jQuery111107584463972365898_1729065548044");
 
         int delay = ConfigUtils.getDelay();
-        List<String> areaCodes = AreaUtils.getRandomCodeCombination();
-        List<String> stockAreaNames = new ArrayList<>();
+        List<String> areaCodes = AreaUtils.getRandomCodeCombination(config.getNotifyProvinces());
+        Map<String, List<String>> stockAreaNames = new HashMap<>();
         for (String areaCode : areaCodes) {
             params.put("area", areaCode);
             params.put("_", System.currentTimeMillis());
@@ -51,32 +51,42 @@ public class SkuUtils {
                     .form(params)
                     .execute().body();
             List<String> groups = ReUtil.findAllGroup1(JSON_PATTERN, response);
-            SkuInfo skuInfo = null;
             String areaName = AreaUtils.getAreaName(StrUtil.split(areaCode, "_").get(0));
+
             try {
-                skuInfo = JSONUtil.toBean(JSONUtil.parseObj(groups.get(0)).getStr(skuId), SkuInfo.class);
-                String stockStateName = Optional.ofNullable(skuInfo).map(SkuInfo::getStockStateName).orElse("未知");
-                log.info("{}：{}", areaName, stockStateName);
-                if (Objects.equals(stockStateName, "现货")) {
-                    stockAreaNames.add(areaName);
+                for (String skuId : skuIds) {
+                    SkuInfo skuInfo = null;
+                    skuInfo = JSONUtil.toBean(JSONUtil.parseObj(groups.get(0)).getStr(skuId), SkuInfo.class);
+                    String stockStateName = Optional.ofNullable(skuInfo).map(SkuInfo::getStockStateName).orElse("未知");
+                    log.info("[{}] {}：{}", skuId, areaName, stockStateName);
+                    if (Objects.equals(stockStateName, "现货")) {
+                        List<String> list = stockAreaNames.getOrDefault(skuId, new ArrayList<>());
+                        list.add(areaName);
+                        stockAreaNames.put(skuId, list);
+                    }
                 }
             } catch (Exception e) {
                 log.error("{}：查询异常，response={}", areaName, response);
             }
+
             ThreadUtil.sleep(delay);
         }
 
-        if (CollUtil.isNotEmpty(stockAreaNames)) {
-            List<String> notifyProvinces = config.getNotifyProvinces();
-            Collection<String> intersection = CollUtil.intersection(notifyProvinces, stockAreaNames);
-            if (CollUtil.isEmpty(notifyProvinces)) {
-                // 未配置通知省份则都通知
-                MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", stockAreaNames)));
-            } else if (CollUtil.isNotEmpty(intersection)) {
-                // 或者有现货的省份在配置中则通知
-                MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", intersection)));
+        for (String skuId : skuIds) {
+            List<String> areaNames = stockAreaNames.get(skuId);
+            if (CollUtil.isNotEmpty(areaNames)) {
+                List<String> notifyProvinces = config.getNotifyProvinces();
+                Collection<String> intersection = CollUtil.intersection(notifyProvinces, areaNames);
+                if (CollUtil.isEmpty(notifyProvinces)) {
+                    // 未配置通知省份则都通知
+                    MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", areaNames)));
+                } else if (CollUtil.isNotEmpty(intersection)) {
+                    // 或者有现货的省份在配置中则通知
+                    MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", intersection)));
+                }
             }
         }
+
     }
 
 }
