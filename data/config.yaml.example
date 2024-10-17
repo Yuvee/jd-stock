@@ -1,7 +1,9 @@
 cron: "*/5 * * * *" # 定时任务表达式，默认每5分钟执行
 skuIds: # 监控商品ids
   - 100014150579
-delay: 2000 # 每次查询延迟（毫秒），建议设置大些，防止触发风控
+delay: 5000 # 每次查询延迟（毫秒），建议设置大些，防止触发风控
+ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0
 enableNotify: false # 启用通知
+notifyType: # 通知方式
 notifyProvinces: # 库存省份，省份有货后通知
 dingtalkBot: # 钉钉机器人通知

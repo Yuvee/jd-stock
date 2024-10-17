@@ -35,9 +35,19 @@ public class Config {
     private int delay = MIN_DELAY;
 
     /**
+     * user-agent
+     */
+    private String ua;
+
+    /**
      * 启用通知
      */
     private boolean enableNotify;
+
+    /**
+     * 通知方式（dingtalk_bot）
+     */
+    private String notifyType;
 
     /**
      * 库存省份，省份有货后通知

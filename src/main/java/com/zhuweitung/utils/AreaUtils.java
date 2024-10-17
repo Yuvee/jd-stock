@@ -7,9 +7,10 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.zhuweitung.model.AreaInfo;
+import com.zhuweitung.model.Config;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -105,12 +106,16 @@ public class AreaUtils {
         if (level >= 3) {
             return;
         }
+        Config config = ConfigUtils.get();
         Map<String, Object> params = new HashMap<>();
         params.put("fid", current.getId());
         params.put("callback", "jQuery1111047169012038874314_1729066415663");
         params.put("_", System.currentTimeMillis());
         log.debug("查询地区编码：{} {}", current.getName(), current.getId());
-        String response = HttpUtil.get("https://fts.jd.com/area/get", params);
+        String response = HttpRequest.get("https://fts.jd.com/area/get")
+                .header("user-agent", config.getUa())
+                .form(params)
+                .execute().body();
         List<String> groups = ReUtil.findAllGroup1(JSON_PATTERN, response);
         List<AreaInfo> nextAreas = JSONUtil.toList(groups.get(0), AreaInfo.class);
         if (CollUtil.isEmpty(nextAreas)) {
