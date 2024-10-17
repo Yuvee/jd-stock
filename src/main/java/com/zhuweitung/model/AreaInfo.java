@@ -1,3 +1,5 @@
+package com.zhuweitung.model;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

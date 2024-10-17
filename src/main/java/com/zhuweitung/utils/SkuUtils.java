@@ -1,7 +1,11 @@
+package com.zhuweitung.utils;
+
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.zhuweitung.model.SkuInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -35,15 +39,22 @@ public class SkuUtils {
         params.put("functionId", "pc_stocks");
         params.put("callback", "jQuery111107584463972365898_1729065548044");
 
+        int delay = ConfigUtils.getDelay();
         List<String> areaCodes = AreaUtils.getRandomCodeCombination();
         for (String areaCode : areaCodes) {
             params.put("area", areaCode);
             params.put("_", System.currentTimeMillis());
             String response = HttpUtil.get("https://api.m.jd.com/stocks", params);
             List<String> groups = ReUtil.findAllGroup1(JSON_PATTERN, response);
-            SkuInfo skuInfo = JSONUtil.toBean(JSONUtil.parseObj(groups.get(0)).getStr(skuId), SkuInfo.class);
-            log.info("{}：{}", AreaUtils.getAreaName(StrUtil.split(areaCode, "_").get(0)),
-                    Optional.ofNullable(skuInfo).map(SkuInfo::getStockStateName).orElse("未知"));
+            SkuInfo skuInfo = null;
+            String areaName = AreaUtils.getAreaName(StrUtil.split(areaCode, "_").get(0));
+            try {
+                skuInfo = JSONUtil.toBean(JSONUtil.parseObj(groups.get(0)).getStr(skuId), SkuInfo.class);
+                log.info("{}：{}", areaName, Optional.ofNullable(skuInfo).map(SkuInfo::getStockStateName).orElse("未知"));
+            } catch (Exception e) {
+                log.error("{}：查询异常，response={}", areaName, response);
+            }
+            ThreadUtil.sleep(delay);
         }
     }
 

@@ -1,3 +1,5 @@
+package com.zhuweitung.utils;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -7,6 +9,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.zhuweitung.model.AreaInfo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,14 +40,10 @@ public class AreaUtils {
     private final static List<AreaInfo> AREAS = new ArrayList<>();
     private static Tree<String> AREA_TREE;
 
-    static {
-        load();
-    }
-
     /**
      * 加载京东地区编码
      */
-    private static void load() {
+    public static void load() {
         List<AreaInfo> areas = fetch();
         AREAS.clear();
         AREAS.addAll(areas);
@@ -65,13 +64,16 @@ public class AreaUtils {
      */
     @SneakyThrows
     private static List<AreaInfo> fetch() {
-        File file = new File("area_code.json");
+        File file = new File("data/area_code.json");
         if (FileUtil.exist(file)) {
+            log.info("存在地区编码数据，执行读取");
             List<AreaInfo> areas = JSONUtil.toList(FileUtil.readUtf8String(file), AreaInfo.class);
             if (CollUtil.isNotEmpty(areas)) {
                 return areas;
             }
         }
+        log.info("不存在地区编码数据，执行获取");
+        FileUtil.mkParentDirs(file);
         List<AreaInfo> areas = new CopyOnWriteArrayList<>();
         ExecutorService pool = Executors.newFixedThreadPool(16);
         CountDownLatch countDownLatch = new CountDownLatch(PROVINCES.size());
@@ -107,7 +109,7 @@ public class AreaUtils {
         params.put("fid", current.getId());
         params.put("callback", "jQuery1111047169012038874314_1729066415663");
         params.put("_", System.currentTimeMillis());
-        log.info("fetch fid:{}", current.getId());
+        log.debug("查询地区编码：{} {}", current.getName(), current.getId());
         String response = HttpUtil.get("https://fts.jd.com/area/get", params);
         List<String> groups = ReUtil.findAllGroup1(JSON_PATTERN, response);
         List<AreaInfo> nextAreas = JSONUtil.toList(groups.get(0), AreaInfo.class);

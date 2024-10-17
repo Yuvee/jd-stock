@@ -1,0 +1,10 @@
+services:
+  jd-stock:
+    image: zhuweitung/jd-stock:latest
+    container_name: jd-stock
+    restart: always
+    volumes:
+      - ./data:/app/jd-stock/data
+      - ./log:/app/jd-stock/log
+    environment:
+      TZ: Asia/Shanghai
