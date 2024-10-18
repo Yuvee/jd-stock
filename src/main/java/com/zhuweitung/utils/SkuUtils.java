@@ -74,17 +74,19 @@ public class SkuUtils {
 
         for (String skuId : skuIds) {
             List<String> areaNames = stockAreaNames.get(skuId);
+            List<String> messages = new ArrayList<>();
             if (CollUtil.isNotEmpty(areaNames)) {
                 List<String> notifyProvinces = config.getNotifyProvinces();
                 Collection<String> intersection = CollUtil.intersection(notifyProvinces, areaNames);
                 if (CollUtil.isEmpty(notifyProvinces)) {
                     // 未配置通知省份则都通知
-                    MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", areaNames)));
+                    messages.add(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", areaNames)));
                 } else if (CollUtil.isNotEmpty(intersection)) {
                     // 或者有现货的省份在配置中则通知
-                    MessageUtils.send(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", intersection)));
+                    messages.add(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", intersection)));
                 }
             }
+            MessageUtils.send(StrUtil.join("\n", messages));
         }
 
     }
