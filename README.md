@@ -4,9 +4,14 @@
 
 通过指定的地区编码和商品id定时查询库存
 
+### 待实现
+
+- [ ] java镜像太大，使用go重构
+- [ ] 实现更多通知方式
+
 ### 使用方式
 
-##### 下载配置文件
+#### 下载配置文件
 
 ```bash
 mkdir config
@@ -16,7 +21,7 @@ wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads
 wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@master/config/config.yaml.example
 ```
 
-##### 修改配置文件
+#### 修改配置文件
 
 ```yml
 cron: "*/5 * * * *" # 定时任务表达式，默认每5分钟执行
