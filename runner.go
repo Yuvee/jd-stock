@@ -31,10 +31,11 @@ func main() {
 	log.Printf("|| 查询延迟：%d毫秒\n", utils.GetDelay())
 	log.Printf("|| 启用通知：%v\n", cfg.EnableNotify)
 	if cfg.EnableNotify {
+		log.Printf("|| 通知间隔：%d分钟\n", cfg.NotifyInterval)
 		log.Printf("|| 通知方式：%s\n", cfg.NotifyType)
 		log.Printf("|| 钉钉机器人配置：%v\n", cfg.DingtalkBot)
 	}
-	log.Printf("|| 当前版本：v1.0.1\n")
+	log.Printf("|| 当前版本：v1.0.2\n")
 	log.Println("================================")
 
 	// 加载地区编码

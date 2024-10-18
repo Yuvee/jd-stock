@@ -11,7 +11,7 @@ type DingtalkBotSender struct {
 }
 
 // Send 发送他通知
-func (sender DingtalkBotSender) Send(msg string) {
+func (sender DingtalkBotSender) Send(msg string) error {
 	d := ding.Webhook{
 		AccessToken: sender.Token,
 		Secret:      sender.Secret,
@@ -19,6 +19,7 @@ func (sender DingtalkBotSender) Send(msg string) {
 	err := d.SendMessageText(msg)
 	if err != nil {
 		log.Printf("钉钉机器人通知发送异常：%v", err)
-		return
+		return err
 	}
+	return nil
 }

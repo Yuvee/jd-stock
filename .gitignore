@@ -41,3 +41,4 @@ build/
 log/
 
 config/config.yaml
+config/message_cache.json
