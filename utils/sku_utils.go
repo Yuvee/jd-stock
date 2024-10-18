@@ -20,7 +20,7 @@ var (
 )
 
 // QueryStock 查询库存
-func QueryStock(skuIds []string) {
+func QueryStock(customSkuInfos []models.CustomSkuInfo) {
 	config := GetConfig()
 
 	provinceNames := config.Provinces
@@ -38,7 +38,7 @@ func QueryStock(skuIds []string) {
 	for index, areaCodeCombination := range areaCodeCombinations {
 		q := req.URL.Query()
 		q.Add("type", "getstocks")
-		q.Add("skuIds", strings.Join(skuIds, ","))
+		q.Add("skuIds", getSkuIds(customSkuInfos))
 		q.Add("appid", "item-v3")
 		q.Add("functionId", "pc_stocks")
 		q.Add("callback", "jQuery111107584463972365898_1729065548044")
@@ -73,13 +73,14 @@ func QueryStock(skuIds []string) {
 				continue
 			}
 
-			for _, skuId := range skuIds {
+			for _, customSkuInfo := range customSkuInfos {
+				skuId := customSkuInfo.Id
 				skuInfo, ok := skuInfoMap[skuId]
 				if !ok {
 					continue
 				}
 				stockStateName := skuInfo.StockStateName
-				log.Printf("[%s] %s：%s", skuId, area.Name, stockStateName)
+				log.Printf("[%s] %s %s：%s", skuId, customSkuInfo.Name, area.Name, stockStateName)
 
 				if stockStateName == "现货" {
 					stockAreaNames[skuId] = append(stockAreaNames[skuId], area.Name)
@@ -95,13 +96,14 @@ func QueryStock(skuIds []string) {
 	}
 
 	var messages []string
-	for _, skuId := range skuIds {
+	for _, customSkuInfo := range customSkuInfos {
+		skuId := customSkuInfo.Id
 		areaNames := stockAreaNames[skuId]
 		intersection := getIntersection(provinceNames, areaNames)
 		if len(provinceNames) == 0 {
-			messages = append(messages, fmt.Sprintf("商品 %s 在 %s 地区有现货！\n", skuId, strings.Join(areaNames, "、")))
+			messages = append(messages, fmt.Sprintf("商品 [%s] %s 在 %s 地区有现货！\n", skuId, customSkuInfo.Name, strings.Join(areaNames, "、")))
 		} else if len(intersection) > 0 {
-			messages = append(messages, fmt.Sprintf("商品 %s 在 %s 地区有现货！\n", skuId, strings.Join(intersection, "、")))
+			messages = append(messages, fmt.Sprintf("商品 [%s] %s 在 %s 地区有现货！\n", skuId, customSkuInfo.Name, strings.Join(intersection, "、")))
 		}
 	}
 	if len(messages) > 0 {
@@ -109,8 +111,20 @@ func QueryStock(skuIds []string) {
 		log.Printf("%s\n", message)
 		SendMessage(message)
 	} else {
-		log.Printf("商品 %v 无货...", skuIds)
+		log.Printf("商品 %v 无货...", customSkuInfos)
 	}
+}
+
+// 获取商品ids
+func getSkuIds(skuInfos []models.CustomSkuInfo) string {
+	if len(skuInfos) == 0 {
+		return ""
+	}
+	var skuIds []string
+	for _, skuInfo := range skuInfos {
+		skuIds = append(skuIds, skuInfo.Id)
+	}
+	return strings.Join(skuIds, ",")
 }
 
 // 获取两个字符串数组的交集

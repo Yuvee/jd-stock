@@ -11,7 +11,7 @@ import (
 // 定时任务函数
 func task() {
 	config := utils.GetConfig()
-	utils.QueryStock(config.SkuIds)
+	utils.QueryStock(config.SkuInfos)
 }
 
 func main() {
@@ -27,14 +27,14 @@ func main() {
 	log.Println("=============配置信息=============")
 	log.Printf("|| 间隔执行：%d分钟\n", utils.GetEveryMinutes())
 	log.Printf("|| 库存省份：%v\n", cfg.Provinces)
-	log.Printf("|| 监控商品：%v\n", cfg.SkuIds)
+	log.Printf("|| 监控商品：%v\n", cfg.SkuInfos)
 	log.Printf("|| 查询延迟：%d毫秒\n", utils.GetDelay())
 	log.Printf("|| 启用通知：%v\n", cfg.EnableNotify)
 	if cfg.EnableNotify {
 		log.Printf("|| 通知方式：%s\n", cfg.NotifyType)
 		log.Printf("|| 钉钉机器人配置：%v\n", cfg.DingtalkBot)
 	}
-	log.Printf("当前版本：v1.0.1\n")
+	log.Printf("|| 当前版本：v1.0.1\n")
 	log.Println("================================")
 
 	// 加载地区编码

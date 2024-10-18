@@ -8,6 +8,10 @@ import (
 // SendMessage 发送通知
 func SendMessage(msg string) {
 	config := GetConfig()
+	if !config.EnableNotify {
+		// 未开启通知，跳过
+		return
+	}
 	if "dingtalk_bot" == config.NotifyType {
 		sender := message.DingtalkBotSender{Token: config.DingtalkBot.Token, Secret: config.DingtalkBot.Secret}
 		sender.Send(msg)
