@@ -6,7 +6,7 @@
 
 ### 待实现
 
-- [ ] java镜像太大，使用go重构
+- [x] java镜像太大，使用go重构
 - [ ] 实现更多通知方式
 
 ### 使用方式
@@ -15,10 +15,10 @@
 
 ```bash
 mkdir config
-wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads/master/config/config.yaml.example
+wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads/go/config/config.yaml.example
 
 # 国内
-wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@master/config/config.yaml.example
+wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@go/config/config.yaml.example
 ```
 
 #### 修改配置文件
@@ -51,10 +51,10 @@ docker run -d -name jd-stock -v ./config:/app/jd-stock/config zhuweitung/jd-stoc
 下载`docker-compose.yml`
 
 ```bash
-wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads/master/docker-compose.yml
+wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads/go/docker-compose.yml
 
 # 国内
-wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@master/docker-compose.yml
+wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@go/docker-compose.yml
 ```
 
 启动
