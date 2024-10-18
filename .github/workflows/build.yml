@@ -15,14 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
-
       - name: Prepare
         id: prepare
         run: |

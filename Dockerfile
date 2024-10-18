@@ -1,21 +1,31 @@
-FROM bellsoft/liberica-openjdk-debian:17.0.11-cds
+FROM golang:1.21.11 as builder
+#ENV GOPROXY=https://goproxy.cn,https://goproxy.io,direct
+ENV GO111MODULE=on
+ENV GOCACHE=/go/pkg/.cache/go-build
 
-LABEL maintainer="zhuweitung"
+ADD . /app
+WORKDIR /app
+RUN CGO_ENABLED=0 go build -ldflags "-s -w" -o /app/jd-stock /app/runner.go
 
-RUN mkdir -p /app/jd-stock/log \
-    /app/jd-stock/config \
-    /app/jd-stock/data
+FROM alpine:3.6 as alpine
+RUN apk update && \
+    apk add -U --no-cache ca-certificates tzdata
 
-WORKDIR /app/jd-stock
+FROM alpine:3.6
+MAINTAINER zhuweitung
+LABEL maintainer="zhuweitung" \
+    email="zhuweitung@foxmail.com"
 
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 JAVA_OPTS=""
+ENV TZ="Asia/Shanghai"
 
-ADD ./target/jd-stock-jar-with-dependencies.jar ./app.jar
-ADD ./data/area_code.json ./data/area_code.json
+COPY --from=alpine /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/jd-stock /app/jd-stock
+COPY --from=builder /app/data /app/data
 
-VOLUME ./config
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo $TZ > /etc/timezone
 
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom \
-           -XX:+HeapDumpOnOutOfMemoryError -XX:+UseZGC ${JAVA_OPTS} \
-           -jar app.jar
+WORKDIR /app
+CMD ["./jd-stock"]
 
