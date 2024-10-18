@@ -25,6 +25,11 @@ public class Config {
     private String cron = "*/5 * * * *";
 
     /**
+     * 库存省份，省份有货后通知
+     */
+    private List<String> provinces = new ArrayList<>();
+
+    /**
      * 监控商品ids
      */
     private List<String> skuIds = new ArrayList<>();
@@ -48,11 +53,6 @@ public class Config {
      * 通知方式（dingtalk_bot）
      */
     private String notifyType;
-
-    /**
-     * 库存省份，省份有货后通知
-     */
-    private List<String> notifyProvinces = new ArrayList<>();
 
     /**
      * 钉钉机器人通知

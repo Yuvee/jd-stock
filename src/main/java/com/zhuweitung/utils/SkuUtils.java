@@ -41,7 +41,8 @@ public class SkuUtils {
         params.put("callback", "jQuery111107584463972365898_1729065548044");
 
         int delay = ConfigUtils.getDelay();
-        List<String> areaCodes = AreaUtils.getRandomCodeCombination(config.getNotifyProvinces());
+        List<String> provinces = config.getProvinces();
+        List<String> areaCodes = AreaUtils.getRandomCodeCombination(provinces);
         Map<String, List<String>> stockAreaNames = new HashMap<>();
         for (String areaCode : areaCodes) {
             params.put("area", areaCode);
@@ -76,10 +77,9 @@ public class SkuUtils {
             List<String> areaNames = stockAreaNames.get(skuId);
             List<String> messages = new ArrayList<>();
             if (CollUtil.isNotEmpty(areaNames)) {
-                List<String> notifyProvinces = config.getNotifyProvinces();
-                Collection<String> intersection = CollUtil.intersection(notifyProvinces, areaNames);
-                if (CollUtil.isEmpty(notifyProvinces)) {
-                    // 未配置通知省份则都通知
+                Collection<String> intersection = CollUtil.intersection(provinces, areaNames);
+                if (CollUtil.isEmpty(provinces)) {
+                    // 未配置通知省份则有现货的省份都通知
                     messages.add(StrUtil.format("商品 {} 在 {} 地区有现货！", skuId, StrUtil.join("、", areaNames)));
                 } else if (CollUtil.isNotEmpty(intersection)) {
                     // 或者有现货的省份在配置中则通知

@@ -40,4 +40,4 @@ build/
 .idea/
 log/
 
-data/config.yaml
+config/config.yaml

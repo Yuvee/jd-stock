@@ -4,7 +4,6 @@ services:
     container_name: jd-stock
     restart: always
     volumes:
-      - ./data:/app/jd-stock/data
-      - ./log:/app/jd-stock/log
+      - ./config:/app/jd-stock/config
     environment:
       TZ: Asia/Shanghai

@@ -7,7 +7,6 @@ import com.zhuweitung.model.Config;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 配置信息工具类
@@ -29,16 +28,16 @@ public class ConfigUtils {
      * 加载配置信息
      */
     private static void load() {
-        File file = new File("data/config.yaml");
+        File file = new File("config/config.yaml");
         if (FileUtil.exist(file)) {
             CONFIG = YamlUtil.load(FileUtil.getInputStream(file), Config.class);
             log.info("读取到配置文件");
         } else {
             // 默认配置
             CONFIG = new Config();
-            log.info("未找到配置文件，使用默认配置");
-            // 保存到配置文件
-            YamlUtil.dump(CONFIG, FileUtil.getWriter(file, StandardCharsets.UTF_8, false));
+            log.error("未找到配置文件，请下载 config.yaml.example 文件到 config 目录");
+            // 退出运行
+            System.exit(1);
         }
     }
 
@@ -48,11 +47,11 @@ public class ConfigUtils {
     public static void print() {
         log.info("=====配置信息=====");
         log.info("cron表达式：{}", CONFIG.getCron());
+        log.info("库存省份：{}", CONFIG.getProvinces());
         log.info("监控商品：{}", CONFIG.getSkuIds());
         log.info("查询延迟：{}毫秒", CONFIG.getDelay());
         log.info("启用通知：{}", CONFIG.isEnableNotify());
         if (CONFIG.isEnableNotify()) {
-            log.info("库存省份：{}", CONFIG.getNotifyProvinces());
             log.info("钉钉机器人配置：{}", JSONUtil.toJsonStr(CONFIG.getDingtalkBot()));
         }
         log.info("================");
