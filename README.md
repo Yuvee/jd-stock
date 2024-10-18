@@ -51,10 +51,10 @@ docker run -d -name jd-stock -v ./config:/app/jd-stock/config zhuweitung/jd-stoc
 下载`docker-compose.yml`
 
 ```bash
-wget -O config/config.yaml https://github.com/zhuweitung/jd-stock/raw/refs/heads/go/docker-compose.yml
+wget -O docker-compose.yml https://github.com/zhuweitung/jd-stock/raw/refs/heads/go/docker-compose.yml
 
 # 国内
-wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@go/docker-compose.yml
+wget -O docker-compose.yml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@go/docker-compose.yml
 ```
 
 启动
