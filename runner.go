@@ -34,7 +34,7 @@ func main() {
 		log.Printf("|| 通知方式：%s\n", cfg.NotifyType)
 		log.Printf("|| 钉钉机器人配置：%v\n", cfg.DingtalkBot)
 	}
-	log.Printf("当前版本：v1.0.0\n")
+	log.Printf("当前版本：v1.0.1\n")
 	log.Println("================================")
 
 	// 加载地区编码
