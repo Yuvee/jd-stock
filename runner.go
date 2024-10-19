@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/zhuweitung/jd-stock/message"
 	"github.com/zhuweitung/jd-stock/utils"
 	"log"
 	"time"
@@ -33,9 +34,15 @@ func main() {
 	if cfg.EnableNotify {
 		log.Printf("|| 通知间隔：%d分钟\n", cfg.NotifyInterval)
 		log.Printf("|| 通知方式：%s\n", cfg.NotifyType)
-		log.Printf("|| 钉钉机器人配置：%v\n", cfg.DingtalkBot)
+		var sender message.Sender
+		sender, err = utils.GetSender()
+		if err != nil {
+			log.Printf("%v", err)
+			return
+		}
+		log.Printf("|| %s配置：%v\n", sender.GetName(), cfg.DingtalkBotSender)
 	}
-	log.Printf("|| 当前版本：v1.0.2\n")
+	log.Printf("|| 当前版本：v1.0.3\n")
 	log.Println("================================")
 
 	// 加载地区编码

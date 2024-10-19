@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/zhuweitung/jd-stock/message"
 	"github.com/zhuweitung/jd-stock/models"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -62,4 +63,31 @@ func GetDelay() int {
 		return configInstance.Delay
 	}
 	return 5000 // 返回最小值 5000 毫秒
+}
+
+// GetSender 获取通知发送客户端
+func GetSender() (message.Sender, error) {
+	if !configInstance.EnableNotify {
+		return nil, fmt.Errorf("未启用通知")
+	}
+	if configInstance.NotifyType == "" {
+		return nil, fmt.Errorf("未指定通知方式")
+	}
+	var sender message.Sender
+	if "dingtalk_bot" == configInstance.NotifyType {
+		sender = configInstance.DingtalkBotSender
+
+	} else if "qy_wechat_bot" == configInstance.NotifyType {
+		sender = configInstance.QyWechatBotSender
+
+	} else if "push_plus" == configInstance.NotifyType {
+		sender = configInstance.PushPlusSender
+
+	} else if "server_chan" == configInstance.NotifyType {
+		sender = configInstance.ServerChanSender
+
+	} else {
+		return nil, fmt.Errorf("通知方式%s未实现", configInstance.NotifyType)
+	}
+	return sender, nil
 }

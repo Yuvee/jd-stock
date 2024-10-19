@@ -4,8 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
-	"github.com/zhuweitung/jd-stock/message"
 	"github.com/zhuweitung/jd-stock/models"
 	"log"
 	"os"
@@ -28,16 +26,17 @@ func SendMessage(msg string) {
 		// 存在通知缓存，跳过
 		return
 	}
-	var err error
-	if "dingtalk_bot" == config.NotifyType {
-		sender := message.DingtalkBotSender{Token: config.DingtalkBot.Token, Secret: config.DingtalkBot.Secret}
-		err = sender.Send(msg)
-	} else {
-		log.Printf("通知方式%s未实现，欢迎 pull request\n", config.NotifyType)
-		err = fmt.Errorf("通知方式%s未实现", config.NotifyType)
+	// 获取通知消息发送客户端
+	sender, err := GetSender()
+	if err != nil {
+		log.Printf("%v", err)
+		return
 	}
+	err = sender.Send(msg)
 	if err == nil {
 		appendCache(msg)
+	} else {
+		log.Printf("%v，跳过通知\n", err)
 	}
 }
 

@@ -29,7 +29,7 @@ wget -O config/config.yaml https://fastly.jsdelivr.net/gh/zhuweitung/jd-stock@go
 #### 修改配置文件
 
 ```yml
-cron: "*/5 * * * *" # 定时任务表达式，默认每5分钟执行
+everyMinutes: 5 # 每隔N分钟执行
 provinces: # 库存省份，省份有货后通知
   - 江苏
   - 浙江
@@ -41,10 +41,16 @@ delay: 5500 # 每次查询延迟（毫秒），建议设置大些，防止触发
 ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0
 enableNotify: false # 启用通知
 notifyInterval: 720 # 通知间隔（分钟），防止频繁发送相同通知，0表示允许重复提醒
-notifyType: "dingtalk_bot" # 通知方式（dingtalk_bot）
-dingtalkBot: # 钉钉机器人通知
+notifyType: "dingtalk_bot" # 通知方式（dingtalk_bot、qy_wechat_bot、push_plus、server_chan）
+dingtalkBot: # 钉钉机器人
   token:
   secret:
+qyWechatBot: # 企业微信机器人
+  key:
+pushPlus: # PushPlus
+  token:
+serverChan: # Server酱
+  sendKey:
 ```
 
 #### docker（二选一）

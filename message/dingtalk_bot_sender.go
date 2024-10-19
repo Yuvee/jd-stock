@@ -1,17 +1,26 @@
 package message
 
 import (
+	"fmt"
 	"github.com/wanghuiyt/ding"
 	"log"
 )
 
+// DingtalkBotSender 钉钉机器人配置
 type DingtalkBotSender struct {
-	Token  string
-	Secret string
+	Token  string `yaml:"token"`
+	Secret string `yaml:"secret"`
 }
 
-// Send 发送他通知
+func (_ DingtalkBotSender) GetName() string {
+	return "钉钉机器人"
+}
+
+// Send 发送通知
 func (sender DingtalkBotSender) Send(msg string) error {
+	if sender.Token == "" || sender.Secret == "" {
+		return fmt.Errorf("钉钉机器人配置缺失")
+	}
 	d := ding.Webhook{
 		AccessToken: sender.Token,
 		Secret:      sender.Secret,

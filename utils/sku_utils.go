@@ -108,7 +108,7 @@ func QueryStock(customSkuInfos []models.CustomSkuInfo) {
 	}
 	if len(messages) > 0 {
 		message := strings.Join(messages, "\n")
-		log.Printf("%s\n", message)
+		log.Printf("%s", message)
 		SendMessage(message)
 	} else {
 		log.Printf("商品 %v 无货...", customSkuInfos)
