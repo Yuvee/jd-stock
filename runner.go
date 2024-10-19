@@ -40,9 +40,9 @@ func main() {
 			log.Printf("%v", err)
 			return
 		}
-		log.Printf("|| %s配置：%v\n", sender.GetName(), cfg.DingtalkBotSender)
+		log.Printf("|| %s配置：%v\n", sender.GetName(), sender)
 	}
-	log.Printf("|| 当前版本：v1.0.3\n")
+	log.Printf("|| 当前版本：v1.0.4\n")
 	log.Println("================================")
 
 	// 加载地区编码
