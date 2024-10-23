@@ -59,7 +59,7 @@ serverChan: # Server酱
 #### docker（二选一）
 
 ```bash
-docker run -d -name jd-stock -v ./config:/app/config zhuweitung/jd-stock:latest
+docker run -d --name jd-stock -v ./config:/app/config zhuweitung/jd-stock:latest
 ```
 
 #### docker-compose（二选一）
