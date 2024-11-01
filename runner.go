@@ -56,7 +56,7 @@ func main() {
 	scheduler := gocron.NewScheduler(time.Local)
 
 	// 每隔 5 分钟执行一次任务
-	scheduler.Every(utils.GetEveryMinutes()).Minutes().Do(task)
+	scheduler.Every(utils.GetEveryMinutes()).Seconds().Do(task)
 
 	// 启动调度器（异步运行）
 	scheduler.StartAsync()
